@@ -9,3 +9,17 @@ scheduler.cron_tab:
   title: Lightweight cron
   weight: 10
   base_route: scheduler.admin_form
+
+content_moderation.content:
+  # Use the same key content_moderation.content as is used in the core Content
+  # Moderation module. If that modules is enabled we avoid two 'Overview' links.
+  title: 'Overview'
+  route_name: system.admin_content
+  parent_id: system.admin_content
+
+scheduler.scheduled_content:
+  title: 'Scheduled content'
+  route_name: scheduler.scheduled_content
+  parent_id: system.admin_content
+  # Overview seems to have weight 0 and moderated content is weight 1.
+  weight: 5

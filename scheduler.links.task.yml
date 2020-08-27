@@ -11,7 +11,7 @@ scheduler.cron_tab:
   base_route: scheduler.admin_form
 
 content_moderation.content:
-  # Use the same key content_moderation.content as is used in the core Content
+  # Use content_moderation.content the same key as is used in the core Content
   # Moderation module. If that modules is enabled we avoid two 'Overview' links.
   title: 'Overview'
   route_name: system.admin_content

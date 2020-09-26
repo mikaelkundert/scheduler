@@ -10,9 +10,6 @@ use Drupal\rules\Context\ContextConfig;
  * phpcs:set Drupal.Arrays.Array lineLimit 140
  *
  * @group scheduler
- * @group legacy
- * @todo Remove the 'legacy' tag when Rules no longer uses deprecated code.
- * @see https://www.drupal.org/project/scheduler/issues/2924353
  */
 class SchedulerRulesEventsTest extends SchedulerBrowserTestBase {
 
@@ -26,7 +23,7 @@ class SchedulerRulesEventsTest extends SchedulerBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->rulesStorage = $this->container->get('entity_type.manager')->getStorage('rules_reaction_rule');

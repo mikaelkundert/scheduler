@@ -2,10 +2,6 @@ language: php
 os: linux
 dist: xenial
 
-# The Travis CI container mode has random functional test fails, so we must use
-# sudo here.
-sudo: true
-
 services:
   - mysql
 
@@ -28,15 +24,27 @@ jobs:
     - php: 7.3
       env:
         - DRUPAL_CORE=9.0.x
+        # --- Remaining self deprecation notices (0)
+        # --- Remaining direct deprecation notices (4)
         # 4 inheritEnvironmentVariables
         - DEPRECATIONS=4
     - php: 7.4
       env:
         - DRUPAL_CORE=9.1.x
+        # --- Remaining self deprecation notices (0)
+        # --- Remaining direct deprecation notices (110)
         # 4 inheritEnvironmentVariables
-        # 31 setUp without a void return
-        # 52 \Component\EventDispatcher -> \Contracts\EventDispatcher
-        - DEPRECATIONS=87
+        # 106 EventDispatcher (in Rules module)
+        - DEPRECATIONS=110
+    - php: 7.4
+      env:
+        # Have a second 9.1 run which excludes the Rules tests.
+        - DRUPAL_CORE=9.1.x
+        # --- Remaining self deprecation notices (0)
+        # --- Remaining direct deprecation notices (4)
+        # 4 inheritEnvironmentVariables
+        - DEPRECATIONS=4
+        - RULES=NO
 
 # Be sure to cache composer downloads.
 cache:
@@ -79,8 +87,9 @@ before_script:
   # Run composer self-update and install.
   - travis_retry composer self-update && travis_retry composer install
 
-  # Install drush
-  - travis_retry composer require drush/drush:"^9.0 || ^10.0"
+  # Install drush. COMPOSER_MEMORY_LIMIT=-1 fixes the 'Allowed memory exhausted'
+  # problem when running at core 8.8.
+  - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require drush/drush:"^9.0 || ^10.0"
 
   # Coder is already installed as part of composer install. We just need to set
   # the installed_paths to pick up the Drupal standards.
@@ -99,7 +108,11 @@ before_script:
 script:
   # Run the PHPUnit tests.
   - cd $DRUPAL_ROOT
-  - ./vendor/bin/phpunit -c ./core/phpunit.xml.dist ./modules/$MODULE/tests/;
+  - if [ $RULES == "NO" ]; then
+      ./vendor/bin/phpunit -c ./core/phpunit.xml.dist --debug ./modules/$MODULE/tests/ --filter '/^((?!rules).)*$/i';
+    else
+      ./vendor/bin/phpunit -c ./core/phpunit.xml.dist --debug ./modules/$MODULE/tests/;
+    fi
 
   # Check for coding standards. First change directory to our module.
   - cd $DRUPAL_ROOT/modules/$MODULE

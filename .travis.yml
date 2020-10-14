@@ -124,7 +124,7 @@ script:
   - cd $DRUPAL_ROOT/modules/$MODULE
 
   # List all the sniffs that were used.
-  - composer show drupal/Coder | egrep 'vers|name '
+  - composer show drupal/coder | egrep 'vers|name '
   - $DRUPAL_ROOT/vendor/bin/phpcs --version
   - $DRUPAL_ROOT/vendor/bin/phpcs -i
   - $DRUPAL_ROOT/vendor/bin/phpcs -e

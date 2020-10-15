@@ -123,11 +123,11 @@ script:
   # Check for coding standards. First show the versions.
   - composer show drupal/coder | egrep 'name |vers'
   - composer show squizlabs/php_codesniffer | egrep 'name |vers'
+  - $DRUPAL_ROOT/vendor/bin/phpcs --version
 
   # List all the sniffs that are used.
-  - $DRUPAL_ROOT/vendor/bin/phpcs --version
   - $DRUPAL_ROOT/vendor/bin/phpcs -i
-  - $DRUPAL_ROOT/vendor/bin/phpcs -e
+  - $DRUPAL_ROOT/vendor/bin/phpcs -e --standard=$DRUPAL_ROOT/modules/$MODULE/phpcs.xml.dist
 
   # Show the violations in detail and do not fail for any errors or warnings.
   - cd $DRUPAL_ROOT/modules/$MODULE
